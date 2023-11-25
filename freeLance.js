@@ -31,4 +31,82 @@ const p = document.querySelector("#average")
 p.innerHTML = average
 
 const q = document.querySelector("#TableDiv")
-q.innerHTML = freelancers
+freelancers.forEach((freelancer, index) => {
+    // Create a new list item
+    const listItem = document.createElement("li");
+    listItem.id = `item${index + 1}`;
+
+    // Update the list item
+    listItem.textContent = `Name: ${freelancer.name}, Price: ${freelancer.price}, Occupation: ${freelancer.occupation}`;
+
+    // Append the list
+    q.querySelector("ul").appendChild(listItem);
+});
+let index = 0;
+let intervalId;
+
+// Function to add a new freelancer to the freelancers array
+function addFreelancer() {
+    const newFreelancer = moreFreeLancers[index];
+    if (newFreelancer) {
+        freelancers.push(newFreelancer);
+        console.log('Added:', newFreelancer);
+        index++;
+        updateTable(); // Update the table after adding a freelancer
+    } else {
+        console.log('No more freelancers to add.');
+        clearInterval(intervalId);
+    }
+}
+
+// Function to update the TableDiv with the current freelancers array
+// ... (your existing code)
+
+// Function to update the TableDiv with the current freelancers array and refresh the average
+function updateTable() {
+    const tableDiv = document.querySelector("#TableDiv");
+    
+    // Clear existing content
+    tableDiv.innerHTML = "";
+    
+    // Create a new table
+    const table = document.createElement("table");
+    
+    // Create header row
+    const headerRow = table.insertRow(0);
+    const headers = ["Name", "Price", "Occupation"];
+    headers.forEach(headerText => {
+        const th = document.createElement("th");
+        th.textContent = headerText;
+        headerRow.appendChild(th);
+    });
+
+    // Create rows with freelancer data
+    freelancers.forEach(freelancer => {
+        const row = table.insertRow();
+        Object.values(freelancer).forEach(value => {
+            const cell = row.insertCell();
+            cell.textContent = value;
+        });
+    });
+
+    // Append the table to the TableDiv
+    tableDiv.appendChild(table);
+
+    // Update the average and display it
+    const average = averagePrice(freelancers);
+    const p = document.querySelector("#average");
+    p.innerHTML = average;
+}
+
+// Function to start the interval
+function startAddingFreelancers() {
+    // Set an interval to add a new freelancer every 2 seconds
+    intervalId = setInterval(function () {
+        addFreelancer();
+        updateTable(); // Update the table and average after adding a freelancer
+    }, 2000);
+}
+
+// Invoke the function manually
+startAddingFreelancers();
